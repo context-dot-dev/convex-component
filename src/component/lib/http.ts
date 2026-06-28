@@ -1,14 +1,9 @@
-import { ConvexError, v } from "convex/values";
+import { ConvexError } from "convex/values";
 
 import { env } from "../_generated/server.js";
 import type { paths } from "../../generated/openapi.js";
 
 export const API_BASE_URL = "https://api.context.dev/v1";
-
-export const anyArgs = {
-  params: v.optional(v.any()),
-  body: v.optional(v.any()),
-};
 
 type MethodFor<Path extends keyof paths> = Extract<
   keyof paths[Path],

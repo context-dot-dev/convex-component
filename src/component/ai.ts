@@ -1,22 +1,21 @@
-import { v } from "convex/values";
-
 import { action } from "./_generated/server.js";
-import { anyArgs, contextRequest } from "./lib/http.js";
+import { contextRequest } from "./lib/http.js";
+import { apiResponse, args as validators } from "./lib/validators.js";
 
 export const query = action({
-  args: anyArgs,
-  returns: v.any(),
+  args: validators.aiQuery,
+  returns: apiResponse,
   handler: async (_, args) => contextRequest("post", "/brand/ai/query", args),
 });
 
 export const product = action({
-  args: anyArgs,
-  returns: v.any(),
+  args: validators.extractProduct,
+  returns: apiResponse,
   handler: async (_, args) => contextRequest("post", "/brand/ai/product", args),
 });
 
 export const products = action({
-  args: anyArgs,
-  returns: v.any(),
+  args: validators.extractProducts,
+  returns: apiResponse,
   handler: async (_, args) => contextRequest("post", "/brand/ai/products", args),
 });

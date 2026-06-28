@@ -97,6 +97,8 @@ The helper client types `params`, `body`, and returned data from `openapispec.js
 - `contextDev.extractProducts(ctx, { body: { domain } })`
 - `contextDev.retrieveNaics(ctx, { params: { input } })`
 
+The component actions also validate their runtime argument shapes with Convex validators. For example, `components.contextDev.web.scrapeMarkdown` requires `params.url`, while `components.contextDev.web.search` requires `body.query`. API responses are validated as JSON objects before they are returned to your Convex function.
+
 Raw component action groups are available under:
 
 - `components.contextDev.brand`

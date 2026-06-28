@@ -1,10 +1,9 @@
-import { v } from "convex/values";
-
 import { action } from "./_generated/server.js";
-import { anyArgs, contextRequest } from "./lib/http.js";
+import { contextRequest } from "./lib/http.js";
+import { apiResponse, args as validators } from "./lib/validators.js";
 
 export const retrieve = action({
-  args: anyArgs,
-  returns: v.any(),
+  args: validators.retrievePerson,
+  returns: apiResponse,
   handler: async (_, args) => contextRequest("post", "/people/retrieve", args),
 });
