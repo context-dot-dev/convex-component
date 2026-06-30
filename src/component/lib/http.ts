@@ -46,10 +46,12 @@ export async function contextRequest<
     appendQueryParams(url.searchParams, args.params);
   }
 
+  const apiKey = getApiKey();
+
   const response = await fetch(url, {
     method: String(method).toUpperCase(),
     headers: {
-      Authorization: `Bearer ${env.CONTEXT_DEV_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
       Accept: "application/json",
       ...(args.body !== undefined ? { "Content-Type": "application/json" } : {}),
     },
@@ -70,6 +72,16 @@ export async function contextRequest<
   }
 
   return payload as JsonResponse<Path, Method>;
+}
+
+function getApiKey() {
+  if (!env.CONTEXT_DEV_API_KEY) {
+    throw new ConvexError(
+      "CONTEXT_DEV_API_KEY is not configured. Set it on the Convex deployment before calling Context.dev.",
+    );
+  }
+
+  return env.CONTEXT_DEV_API_KEY;
 }
 
 function appendQueryParams(searchParams: URLSearchParams, value: unknown, prefix?: string) {

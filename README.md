@@ -13,7 +13,7 @@ npm install @context-dev/convex
 Add the component to your Convex app:
 
 ```ts
-import contextDev from "@context-dev/convex/convex.config.js";
+import contextDev from "@context-dev/convex/convex.config";
 import { defineApp } from "convex/server";
 import { v } from "convex/values";
 
@@ -106,6 +106,31 @@ Raw component action groups are available under:
 - `components.contextDev.ai`
 - `components.contextDev.industry`
 - `components.contextDev.people`
+
+## Testing
+
+The package includes a `convex-test` registration helper so app tests can mount the component without duplicating component internals:
+
+```ts
+import { convexTest } from "convex-test";
+import { describe, expect, it } from "vitest";
+
+import schema from "./schema.js";
+import { api } from "./_generated/api.js";
+import contextDevTest from "@context-dev/convex/test";
+
+describe("Context.dev usage", () => {
+  it("registers the Context.dev component", async () => {
+    const t = convexTest(schema);
+    contextDevTest.register(t);
+
+    // Call your app functions that use components.contextDev here.
+    // await t.action(api.myModule.myAction, { domain: "context.dev" });
+  });
+});
+```
+
+The test entrypoint also exports `schema` and `modules` for tests that need to customize component registration.
 
 ## Development
 

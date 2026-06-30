@@ -16,9 +16,17 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./convex.config": {
+      "types": "./dist/component/convex.config.d.ts",
+      "import": "./dist/component/convex.config.js"
+    },
     "./convex.config.js": {
       "types": "./dist/component/convex.config.d.ts",
       "import": "./dist/component/convex.config.js"
+    },
+    "./_generated/component": {
+      "types": "./dist/component/_generated/component.d.ts",
+      "import": "./dist/component/_generated/component.js"
     },
     "./_generated/component.js": {
       "types": "./dist/component/_generated/component.d.ts",
@@ -33,8 +41,8 @@
   "scripts": {
     "generate:openapi": "openapi-typescript openapispec.json -o src/generated/openapi.ts",
     "codegen": "convex codegen --component-dir src/component",
-    "build": "npm run generate:openapi && tsc -p tsconfig.json",
-    "typecheck": "npm run generate:openapi && tsc -p tsconfig.json --noEmit",
+    "build": "npm run generate:openapi && tsc -p tsconfig.build.json",
+    "typecheck": "npm run generate:openapi && tsc -p tsconfig.build.json --noEmit && tsc -p tsconfig.test.json --noEmit",
     "test": "vitest run"
   },
   "peerDependencies": {

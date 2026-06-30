@@ -12,6 +12,10 @@ export function registerContextDev(t: ConvexTestLike, name = "contextDev") {
   t.registerComponent(name, schema, modules);
 }
 
+export { modules, schema };
+
 export default {
+  modules,
   register: registerContextDev,
+  schema,
 };

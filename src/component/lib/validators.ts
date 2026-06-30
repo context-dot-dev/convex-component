@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import type { Validator } from "convex/values";
 
 const jsonPrimitive = v.union(v.null(), v.boolean(), v.number(), v.string());
 const jsonValue1 = v.union(
@@ -33,7 +34,9 @@ const jsonValue6 = v.union(
 );
 
 export const jsonValue = jsonValue6;
-export const apiResponse = v.record(v.string(), jsonValue) as any;
+// Context.dev endpoints return JSON object envelopes. The validator is intentionally
+// recursive to a practical depth instead of accepting arbitrary Convex values.
+export const apiResponse = v.record(v.string(), jsonValue) as unknown as Validator<unknown>;
 
 const optionalStringArray = v.optional(v.array(v.string()));
 const optionalHeaders = v.optional(v.record(v.string(), v.string()));

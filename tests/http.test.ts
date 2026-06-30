@@ -8,14 +8,31 @@ describe("contextRequest", () => {
     delete process.env.CONTEXT_DEV_API_KEY;
   });
 
+  it("throws a clear error when the API key is missing", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      contextRequest("get", "/web/scrape/markdown", {
+        params: {
+          url: "https://example.com",
+        },
+      }),
+    ).rejects.toThrow("CONTEXT_DEV_API_KEY is not configured");
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("sends bearer auth and serializes deep-object query params", async () => {
     process.env.CONTEXT_DEV_API_KEY = "test-key";
 
-    const fetchMock = vi.fn(async () => {
-      return new Response(JSON.stringify({ ok: true }), {
-        headers: { "content-type": "application/json" },
-      });
-    });
+    const fetchMock = vi.fn(
+      async (_url: Parameters<typeof fetch>[0], _init?: Parameters<typeof fetch>[1]) => {
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { "content-type": "application/json" },
+        });
+      },
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     await contextRequest("get", "/web/scrape/markdown", {
@@ -46,11 +63,13 @@ describe("contextRequest", () => {
   it("sends JSON request bodies for POST endpoints", async () => {
     process.env.CONTEXT_DEV_API_KEY = "test-key";
 
-    const fetchMock = vi.fn(async () => {
-      return new Response(JSON.stringify({ results: [] }), {
-        headers: { "content-type": "application/json" },
-      });
-    });
+    const fetchMock = vi.fn(
+      async (_url: Parameters<typeof fetch>[0], _init?: Parameters<typeof fetch>[1]) => {
+        return new Response(JSON.stringify({ results: [] }), {
+          headers: { "content-type": "application/json" },
+        });
+      },
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     await contextRequest("post", "/web/search", {
