@@ -5,6 +5,14 @@
   "type": "module",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/context-dot-dev/convex-component.git"
+  },
+  "bugs": {
+    "url": "https://github.com/context-dot-dev/convex-component/issues"
+  },
+  "homepage": "https://github.com/context-dot-dev/convex-component#readme",
   "files": [
     "dist",
     "openapispec.json",
