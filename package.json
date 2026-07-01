@@ -1,5 +1,5 @@
 {
-  "name": "@context-dev/convex",
+  "name": "@context-dot-dev/convex",
   "version": "0.1.0",
   "description": "Convex component for calling the Context.dev API from Convex functions.",
   "type": "module",

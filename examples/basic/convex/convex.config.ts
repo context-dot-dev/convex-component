@@ -1,4 +1,4 @@
-import contextDev from "@context-dev/convex/convex.config.js";
+import contextDev from "@context-dot-dev/convex/convex.config.js";
 import { defineApp } from "convex/server";
 import { v } from "convex/values";
 

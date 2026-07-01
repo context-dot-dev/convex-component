@@ -16,8 +16,8 @@ npm publish --access public
 
 The published package must include:
 
-- `@context-dev/convex`
-- `@context-dev/convex/convex.config.js`
-- `@context-dev/convex/_generated/component.js`
-- `@context-dev/convex/test`
-- `@context-dev/convex/openapispec.json`
+- `@context-dot-dev/convex`
+- `@context-dot-dev/convex/convex.config.js`
+- `@context-dot-dev/convex/_generated/component.js`
+- `@context-dot-dev/convex/test`
+- `@context-dot-dev/convex/openapispec.json`

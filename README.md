@@ -7,13 +7,13 @@ This package is generated against `openapispec.json` and exposes thin wrappers f
 ## Install
 
 ```sh
-npm install @context-dev/convex
+npm install @context-dot-dev/convex
 ```
 
 Add the component to your Convex app:
 
 ```ts
-import contextDev from "@context-dev/convex/convex.config";
+import contextDev from "@context-dot-dev/convex/convex.config";
 import { defineApp } from "convex/server";
 import { v } from "convex/values";
 
@@ -61,7 +61,7 @@ export const brand = action({
 Or use the typed helper client:
 
 ```ts
-import { ContextDev } from "@context-dev/convex";
+import { ContextDev } from "@context-dot-dev/convex";
 import { v } from "convex/values";
 
 import { components } from "./_generated/api.js";
@@ -117,7 +117,7 @@ import { describe, expect, it } from "vitest";
 
 import schema from "./schema.js";
 import { api } from "./_generated/api.js";
-import contextDevTest from "@context-dev/convex/test";
+import contextDevTest from "@context-dot-dev/convex/test";
 
 describe("Context.dev usage", () => {
   it("registers the Context.dev component", async () => {

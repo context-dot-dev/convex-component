@@ -1,4 +1,4 @@
-import { ContextDev } from "@context-dev/convex";
+import { ContextDev } from "@context-dot-dev/convex";
 import { v } from "convex/values";
 
 import { components } from "./_generated/api.js";
