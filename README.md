@@ -1,8 +1,13 @@
+[![Convex Component](https://www.convex.dev/components/badge/context-dot-dev/convex)](https://www.convex.dev/components/context-dot-dev/convex)
+
 # Context.dev Convex Component
 
-Use the Context.dev API from Convex actions through an isolated Convex component.
+Call the [Context.dev](https://context.dev) API from your Convex actions. This component wraps the Context.dev REST API with typed helpers and isolated component actions—no data is stored in Convex.
 
-This package is generated against `openapispec.json` and exposes thin wrappers for the Context.dev REST API. It does not persist data in Convex; Context.dev caching behavior is controlled through the API parameters such as `maxAgeMs`.
+## Prerequisites
+
+- A Convex app ([get started](https://docs.convex.dev/get-started))
+- A [Context.dev API key](https://context.dev)
 
 ## Install
 
@@ -10,10 +15,12 @@ This package is generated against `openapispec.json` and exposes thin wrappers f
 npm install @context-dot-dev/convex
 ```
 
-Add the component to your Convex app:
+## Setup
+
+Add the component to your Convex app config and wire your API key through component env:
 
 ```ts
-import contextDev from "@context-dot-dev/convex/convex.config";
+import contextDev from "@context-dot-dev/convex/convex.config.js";
 import { defineApp } from "convex/server";
 import { v } from "convex/values";
 
@@ -32,15 +39,50 @@ app.use(contextDev, {
 export default app;
 ```
 
-Set `CONTEXT_DEV_API_KEY` on the Convex deployment, then run:
+Set `CONTEXT_DEV_API_KEY` on your Convex deployment:
 
 ```sh
+npx convex env set CONTEXT_DEV_API_KEY your_api_key_here
 npx convex dev
 ```
 
 ## Usage
 
-You can call the component API directly from Convex actions:
+### Typed helper client (recommended)
+
+Create a shared client and call it from your actions:
+
+```ts
+import { ContextDev } from "@context-dot-dev/convex";
+import { v } from "convex/values";
+
+import { components } from "./_generated/api.js";
+import { action } from "./_generated/server.js";
+
+const contextDev = new ContextDev(components.contextDev);
+
+export const brand = action({
+  args: { domain: v.string() },
+  handler: async (ctx, args) => {
+    return await contextDev.retrieveBrand(ctx, {
+      params: { domain: args.domain },
+    });
+  },
+});
+
+export const scrapeMarkdown = action({
+  args: { url: v.string() },
+  handler: async (ctx, args) => {
+    return await contextDev.scrapeMarkdown(ctx, {
+      params: { url: args.url },
+    });
+  },
+});
+```
+
+### Direct component actions
+
+You can also call component actions directly with `ctx.runAction`:
 
 ```ts
 import { v } from "convex/values";
@@ -58,48 +100,44 @@ export const brand = action({
 });
 ```
 
-Or use the typed helper client:
+## API reference
 
-```ts
-import { ContextDev } from "@context-dot-dev/convex";
-import { v } from "convex/values";
+GET endpoints take `params`. POST endpoints take `body` and may also take `params` when the operation defines query parameters. Responses are validated as JSON before being returned to your function.
 
-import { components } from "./_generated/api.js";
-import { action } from "./_generated/server.js";
+### Helper methods
 
-const contextDev = new ContextDev(components.contextDev);
+| Method | Description |
+| --- | --- |
+| `scrapeHtml` | Scrape a URL and return raw HTML |
+| `scrapeMarkdown` | Scrape a URL and return Markdown |
+| `scrapeImages` | Extract image references from a page |
+| `crawlSitemap` | Crawl a domain sitemap |
+| `crawl` | Crawl a site and return Markdown pages |
+| `extract` | Crawl pages and extract structured data from a JSON schema |
+| `search` | Search the web with optional filters and Markdown extraction |
+| `competitors` | Find direct competitors for a domain |
+| `styleguide` | Extract colors, typography, and design system details |
+| `fonts` | Extract font usage and font asset links |
+| `screenshot` | Capture a website screenshot |
+| `retrieveBrand` | Retrieve full brand data by domain |
+| `retrieveBrandByName` | Retrieve brand data by company name |
+| `retrieveBrandByEmail` | Retrieve brand data from a business email |
+| `retrieveBrandByTicker` | Retrieve brand data by stock ticker |
+| `retrieveBrandByIsin` | Retrieve brand data by ISIN |
+| `identifyBrandFromTransaction` | Identify a brand from transaction text |
+| `retrieveSimplifiedBrand` | Retrieve a smaller brand payload |
+| `prefetchBrand` | Queue brand prefetching by domain |
+| `prefetchBrandByEmail` | Queue brand prefetching by email |
+| `retrievePerson` | Retrieve a person profile from supported identifiers |
+| `retrieveNaics` | Classify a company into NAICS codes |
+| `retrieveSic` | Classify a company into SIC codes |
+| `aiQuery` | Extract custom AI-defined datapoints from a website |
+| `extractProduct` | Extract product data from a product page URL |
+| `extractProducts` | Extract product listings from a domain or URL |
 
-export const scrape = action({
-  args: { url: v.string() },
-  handler: async (ctx, args) => {
-    return await contextDev.scrapeMarkdown(ctx, {
-      params: { url: args.url },
-    });
-  },
-});
-```
+### Component action groups
 
-## API Shape
-
-GET endpoints take `params`; POST endpoints take `body` and may also take `params` if the OpenAPI operation defines query parameters.
-
-The helper client types `params`, `body`, and returned data from `openapispec.json`:
-
-- `contextDev.retrieveBrand(ctx, { params: { domain } })`
-- `contextDev.retrieveBrandByName(ctx, { params: { company_name } })`
-- `contextDev.retrieveBrandByEmail(ctx, { params: { email } })`
-- `contextDev.identifyBrandFromTransaction(ctx, { params: { transaction_info } })`
-- `contextDev.scrapeMarkdown(ctx, { params: { url } })`
-- `contextDev.crawl(ctx, { body: { url, maxPages } })`
-- `contextDev.extract(ctx, { body: { url, schema } })`
-- `contextDev.search(ctx, { body: { query } })`
-- `contextDev.aiQuery(ctx, { body: { domain, data_to_extract } })`
-- `contextDev.extractProducts(ctx, { body: { domain } })`
-- `contextDev.retrieveNaics(ctx, { params: { input } })`
-
-The component actions also validate their runtime argument shapes with Convex validators. For example, `components.contextDev.web.scrapeMarkdown` requires `params.url`, while `components.contextDev.web.search` requires `body.query`. API responses are validated as JSON objects before they are returned to your Convex function.
-
-Raw component action groups are available under:
+Raw component actions are available under:
 
 - `components.contextDev.brand`
 - `components.contextDev.web`
@@ -107,39 +145,13 @@ Raw component action groups are available under:
 - `components.contextDev.industry`
 - `components.contextDev.people`
 
-## Testing
+Argument and response types are inferred from the Context.dev OpenAPI spec, so your editor will autocomplete `params` and `body` fields.
 
-The package includes a `convex-test` registration helper so app tests can mount the component without duplicating component internals:
+## Caching
 
-```ts
-import { convexTest } from "convex-test";
-import { describe, expect, it } from "vitest";
+This component does not persist data in Convex. Context.dev caching is controlled through API parameters such as `maxAgeMs` on individual requests.
 
-import schema from "./schema.js";
-import { api } from "./_generated/api.js";
-import contextDevTest from "@context-dot-dev/convex/test";
+## Learn more
 
-describe("Context.dev usage", () => {
-  it("registers the Context.dev component", async () => {
-    const t = convexTest(schema);
-    contextDevTest.register(t);
-
-    // Call your app functions that use components.contextDev here.
-    // await t.action(api.myModule.myAction, { domain: "context.dev" });
-  });
-});
-```
-
-The test entrypoint also exports `schema` and `modules` for tests that need to customize component registration.
-
-## Development
-
-```sh
-npm install
-npm run build
-npm run typecheck
-```
-
-`npm run build` regenerates TypeScript types from `openapispec.json` and compiles the package.
-
-After configuring a real Convex deployment, run `npm run codegen` to refresh the component generated files from Convex itself.
+- [Context.dev documentation](https://docs.context.dev)
+- [Convex components](https://docs.convex.dev/components)
