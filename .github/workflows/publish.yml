@@ -25,6 +25,7 @@ jobs:
 
       - run: npm install -g npm@latest
       - run: npm ci
+      - run: curl -fsSL "https://app.stainless.com/api/spec/documented/context.dev/openapi.documented.yml" -o openapispec.json
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
